@@ -33,9 +33,9 @@ typedef enum ReplicationSlotType
 
 
 /* ------------------------------------------------------------------------
- *  Below copied from:
- *   - src/backend/replication/slot.c
- *   - src/include/replication/slot.h
+ *	Below copied from:
+ *	 - src/backend/replication/slot.c
+ *	 - src/include/replication/slot.h
  * ------------------------------------------------------------------------
  */
 
@@ -148,4 +148,4 @@ typedef struct ReplicationSlotOnDisk
 } ReplicationSlotOnDisk;
 
 
-#endif   /* PG_REPLSLOT_READER_H */
+#endif	 /* PG_REPLSLOT_READER_H */

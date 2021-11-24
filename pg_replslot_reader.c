@@ -35,15 +35,15 @@ static void do_usage(void);
 
 typedef struct ReplslotInfo
 {
-    bool slotfile_parsed;
-    char error[MAXLEN];
-    char name[MAXLEN];
-    ReplicationSlotType type;
-    uint32 version;
-    uint32 length;
-    uint32 db_oid;
-    ReplicationSlotPersistency persistency;
-    struct ReplslotInfo *next;
+	bool slotfile_parsed;
+	char error[MAXLEN];
+	char name[MAXLEN];
+	ReplicationSlotType type;
+	uint32 version;
+	uint32 length;
+	uint32 db_oid;
+	ReplicationSlotPersistency persistency;
+	struct ReplslotInfo *next;
 } ReplslotInfo;
 
 
@@ -97,9 +97,9 @@ main(int argc, char **argv)
 			case 'D':
 				strncpy(datadir, optarg, MAXPGPATH);
 				break;
-            default:
-		unknown_option:
-                do_usage();
+			default:
+			unknown_option:
+				do_usage();
 				exit(1);
 		}
 	}
@@ -217,54 +217,54 @@ ScanReplSlotDirs(const char *datadir)
 		slotdir_cnt++;
 	}
 
-    closedir(slotdir);
+	closedir(slotdir);
 
-    if (slotdir_cnt == 0)
-    {
-        puts("No replication slots found");
-        exit(0);
-    }
+	if (slotdir_cnt == 0)
+	{
+		puts("No replication slots found");
+		exit(0);
+	}
 
 	printf("%i replication slot(s) found\n\n", slotdir_cnt);
 
-    if (replslot_info_start != NULL)
-    {
-        ReplslotInfo *ptr = replslot_info_start;
+	if (replslot_info_start != NULL)
+	{
+		ReplslotInfo *ptr = replslot_info_start;
 
-        do
-        {
-            if (ptr->slotfile_parsed == false)
-            {
-                printf("Unable to parse slot \"%s\":\n%s\n", ptr->name, ptr->error);
-            }
-            else
-            {
-                int i;
+		do
+		{
+			if (ptr->slotfile_parsed == false)
+			{
+				printf("Unable to parse slot \"%s\":\n%s\n", ptr->name, ptr->error);
+			}
+			else
+			{
+				int i;
 
-                printf("%s\n", ptr->name);
+				printf("%s\n", ptr->name);
 
-                for (i = 0; i < strlen(ptr->name); i++)
-                {
-                    putchar('-');
-                }
-                puts("");
+				for (i = 0; i < strlen(ptr->name); i++)
+				{
+					putchar('-');
+				}
+				puts("");
 
-                printf("  Type: ");
-                if (ptr->type == RS_PHYSICAL )
-                    puts("physical");
-                else
-                    printf("logical; DB oid: %u", ptr->db_oid);
+				printf("  Type: ");
+				if (ptr->type == RS_PHYSICAL )
+					puts("physical");
+				else
+					printf("logical; DB oid: %u", ptr->db_oid);
 
-                printf("  Persistency: %s\n",ptr-> persistency == RS_PERSISTENT ? "persistent" : "empheral");
-                printf("  Version: %u\n", ptr->version);
-                printf("  Length: %u\n", ptr->length);
+				printf("  Persistency: %s\n",ptr-> persistency == RS_PERSISTENT ? "persistent" : "empheral");
+				printf("  Version: %u\n", ptr->version);
+				printf("  Length: %u\n", ptr->length);
 
-            }
-            ptr = ptr->next;
-        } while (ptr != NULL);
-    }
+			}
+			ptr = ptr->next;
+		} while (ptr != NULL);
+	}
 
-    puts("");
+	puts("");
 }
 
 
@@ -280,47 +280,47 @@ ReadReplSlotDir(const char *replslot_dir)
 	char		path[MAXPGPATH];
 	int			readBytes;
 
-    ReplslotInfo *replslot_info_current;
+	ReplslotInfo *replslot_info_current;
 
 	snprintf(path, MAXPGPATH,
 			 "%s/state",
 			 replslot_dir);
 
-    replslot_info_current = pg_malloc0(sizeof(ReplslotInfo));
+	replslot_info_current = pg_malloc0(sizeof(ReplslotInfo));
 
-    if (replslot_info_start == NULL)
-    {
-        replslot_info_start = replslot_info_current;
-        replslot_info_last = replslot_info_current;
-    }
-    else
-    {
-        replslot_info_last->next = replslot_info_current;
-    }
+	if (replslot_info_start == NULL)
+	{
+		replslot_info_start = replslot_info_current;
+		replslot_info_last = replslot_info_current;
+	}
+	else
+	{
+		replslot_info_last->next = replslot_info_current;
+	}
 
 
-    replslot_info_last = replslot_info_current;
-    replslot_info_last->next = NULL;
+	replslot_info_last = replslot_info_current;
+	replslot_info_last->next = NULL;
 
-    replslot_info_last->slotfile_parsed = true;
-    *replslot_info_last->error = '\0';
-    *replslot_info_last->name = '\0';
-    replslot_info_last->version = 0;
-    replslot_info_last->length = 0;
-    replslot_info_last->db_oid = InvalidOid;
-    replslot_info_last->persistency = RS_PERSISTENT;
-    replslot_info_last->next = NULL;
+	replslot_info_last->slotfile_parsed = true;
+	*replslot_info_last->error = '\0';
+	*replslot_info_last->name = '\0';
+	replslot_info_last->version = 0;
+	replslot_info_last->length = 0;
+	replslot_info_last->db_oid = InvalidOid;
+	replslot_info_last->persistency = RS_PERSISTENT;
+	replslot_info_last->next = NULL;
 
 	fd = fopen(path, "rb");
 	if (fd == NULL)
 	{
 		snprintf(
-            replslot_info_last->error, MAXLEN,
-            "Unable to open replication slot file %s:\n%s\n",
+			replslot_info_last->error, MAXLEN,
+			"Unable to open replication slot file %s:\n%s\n",
 			   path,
 			   strerror(errno)
 			);
-        replslot_info_last->slotfile_parsed = false;
+		replslot_info_last->slotfile_parsed = false;
 
 		fclose(fd);
 		return;
@@ -332,11 +332,11 @@ ReadReplSlotDir(const char *replslot_dir)
 	{
 		fclose(fd);
 
-        snprintf(
-            replslot_info_last->error, MAXLEN,
-            "could not read file \"%s\", read %d of %u",
-            path, readBytes,
-            (uint32) ReplicationSlotOnDiskConstantSize);
+		snprintf(
+			replslot_info_last->error, MAXLEN,
+			"could not read file \"%s\", read %d of %u",
+			path, readBytes,
+			(uint32) ReplicationSlotOnDiskConstantSize);
 		return;
 	}
 
@@ -345,10 +345,10 @@ ReadReplSlotDir(const char *replslot_dir)
 	{
 		fclose(fd);
 
-        snprintf(
-            replslot_info_last->error, MAXLEN,
-            "replication slot file \"%s\" has wrong magic number: %u instead of %u",
-            path, cp.magic, SLOT_MAGIC);
+		snprintf(
+			replslot_info_last->error, MAXLEN,
+			"replication slot file \"%s\" has wrong magic number: %u instead of %u",
+			path, cp.magic, SLOT_MAGIC);
 		return;
 	}
 
@@ -357,10 +357,10 @@ ReadReplSlotDir(const char *replslot_dir)
 	{
 		fclose(fd);
 
-        snprintf(
-            replslot_info_last->error, MAXLEN,
-            "replication slot file \"%s\" has unsupported version %u",
-            path, cp.version);
+		snprintf(
+			replslot_info_last->error, MAXLEN,
+			"replication slot file \"%s\" has unsupported version %u",
+			path, cp.version);
 		return;
 	}
 
@@ -369,10 +369,10 @@ ReadReplSlotDir(const char *replslot_dir)
 	{
 		fclose(fd);
 
-        snprintf(
-            replslot_info_last->error, MAXLEN,
-            "replication slot file \"%s\" has corrupted length %u",
-            path, cp.length);
+		snprintf(
+			replslot_info_last->error, MAXLEN,
+			"replication slot file \"%s\" has corrupted length %u",
+			path, cp.length);
 		return;
 	}
 
@@ -384,33 +384,33 @@ ReadReplSlotDir(const char *replslot_dir)
 	if (readBytes != cp.length)
 	{
 		fclose(fd);
-        snprintf(
-            replslot_info_last->error, MAXLEN,
-            "could not read file \"%s\", read %d of %u",
-            path, readBytes, cp.length);
+		snprintf(
+			replslot_info_last->error, MAXLEN,
+			"could not read file \"%s\", read %d of %u",
+			path, readBytes, cp.length);
 		return;
 	}
 
 
-    strncpy(
-        replslot_info_last->name,
-        cp.slotdata.name.data,
-        MAXLEN);
+	strncpy(
+		replslot_info_last->name,
+		cp.slotdata.name.data,
+		MAXLEN);
 
-    replslot_info_last->version = cp.version;
-    replslot_info_last->length =  cp.length;
+	replslot_info_last->version = cp.version;
+	replslot_info_last->length =  cp.length;
 
 	if (cp.slotdata.database == InvalidOid)
-    {
-        replslot_info_last->type = RS_PHYSICAL;
-    }
+	{
+		replslot_info_last->type = RS_PHYSICAL;
+	}
 	else
-    {
-        replslot_info_last->type = RS_LOGICAL;
-        replslot_info_last->db_oid = (uint32)cp.slotdata.database;
-    }
+	{
+		replslot_info_last->type = RS_LOGICAL;
+		replslot_info_last->db_oid = (uint32)cp.slotdata.database;
+	}
 
-    replslot_info_last->persistency = cp.slotdata.persistency;
+	replslot_info_last->persistency = cp.slotdata.persistency;
 
 	fclose(fd);
 }
@@ -419,20 +419,20 @@ ReadReplSlotDir(const char *replslot_dir)
 static void
 do_usage(void)
 {
-    printf(_("%s: replication slot reader\n"), progname);
-    printf(_("Try \"%s --help\" for more information.\n"), progname);
+	printf(_("%s: replication slot reader\n"), progname);
+	printf(_("Try \"%s --help\" for more information.\n"), progname);
 }
 
 static void
 do_help(void)
 {
 	printf(_("%s: replication slot reader\n"), progname);
-	printf(  "\n");
+	printf(	 "\n");
 	printf(_("General options:\n"));
-	printf(_("  -?, --help                          show this help, then exit\n"));
-	printf(_("  -V, --version                       output version information, then exit\n"));
-	printf(  "\n");
+	printf(_("	-?, --help							show this help, then exit\n"));
+	printf(_("	-V, --version						output version information, then exit\n"));
+	printf(	 "\n");
 	printf(_("General configuration options:\n"));
-	printf(_("  -D, --pgdata=DIR                    PostgreSQL data directory to examine\n"));
-	printf(  "\n");
+	printf(_("	-D, --pgdata=DIR					PostgreSQL data directory to examine\n"));
+	printf(	 "\n");
 }
